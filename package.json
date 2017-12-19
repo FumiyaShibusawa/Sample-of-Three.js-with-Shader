@@ -1,0 +1,23 @@
+{
+  "name": "sample-of-three.js-with-shader",
+  "version": "1.0.0",
+  "description": "Three.js sample made with shader materials passing along to GLSL. This is a experimental and for practice, sort of.",
+  "main": "index.js",
+  "scripts": {
+    "start": "http-server -o"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FumiyaShibusawa/Sample-of-Three.js-with-Shader.git"
+  },
+  "author": "FumiyaShibusawa",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FumiyaShibusawa/Sample-of-Three.js-with-Shader/issues"
+  },
+  "homepage": "https://github.com/FumiyaShibusawa/Sample-of-Three.js-with-Shader#readme",
+  "dependencies": {
+    "http-server": "^0.10.0",
+    "three": "^0.89.0"
+  }
+}
