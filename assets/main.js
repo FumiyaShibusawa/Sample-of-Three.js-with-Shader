@@ -2,7 +2,7 @@ var scene, camera, control, renderer, geometry, material, mesh, time;
 
 var WIDTH = window.innerWidth;
 var HEIGHT = window.innerHeight;
-var particles = 150000;
+var particles = 300000;
 
 scene = new THREE.Scene();
 // camera = new THREE.OrthographicCamera( WIDTH / -2.0, WIDTH / 2.0, HEIGHT / 2.0, HEIGHT / -2.0, 0.1, 1000 );
@@ -119,7 +119,7 @@ function animate(){
 function render(){
   time = performance.now();
   material.uniforms.time.value = time;
-  mesh.rotation.x = (Math.cos(Math.PI * time * 0.1 / 360) * 0.25) - 0.1;
+  mesh.rotation.x = (Math.cos(Math.PI * time * 0.1 / 360) * 0.05) + 0.1;
   mesh.rotation.y += Math.PI / 720;
   renderer.render(scene, camera);
   capturer.capture(renderer.domElement);
