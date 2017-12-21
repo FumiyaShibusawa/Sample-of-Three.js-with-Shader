@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/FumiyaShibusawa/Sample-of-Three.js-with-Shader#readme",
   "dependencies": {
+    "ccapture.js": "^1.0.7",
     "http-server": "^0.10.0",
     "three": "^0.89.0"
   }

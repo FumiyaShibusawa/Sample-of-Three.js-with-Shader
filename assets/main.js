@@ -2,13 +2,13 @@ var scene, camera, control, renderer, geometry, material, mesh, time;
 
 var WIDTH = window.innerWidth;
 var HEIGHT = window.innerHeight;
-var triangles = 500;
+var particles = 150000;
 
 scene = new THREE.Scene();
-camera = new THREE.OrthographicCamera( WIDTH / -2.0, WIDTH / 2.0, HEIGHT / 2.0, HEIGHT / -2.0, 0.1, 1000 );
-camera = new THREE.PerspectiveCamera(75, WIDTH / HEIGHT, 0.1, 1000);
-camera.position.set(0, 0, 240.0);
-camera.lookAt(scene.position);
+// camera = new THREE.OrthographicCamera( WIDTH / -2.0, WIDTH / 2.0, HEIGHT / 2.0, HEIGHT / -2.0, 0.1, 1000 );
+camera = new THREE.PerspectiveCamera(75, WIDTH / HEIGHT, 0.1, 10000);
+camera.position.set(0, 20.0, 60.0);
+camera.lookAt(new THREE.Vector3());
 controls = new THREE.OrbitControls(camera);
 controls.autoRotate = true;
 
@@ -35,10 +35,13 @@ var ParamsShaderMaterial = {
     "time": {value: 1.0}
   },
   vertexShader: [
+    "precision mediump float;",
     "attribute vec4 color;",
+    "uniform float time;",
     "varying vec4 vColor;",
     "void main() {",
     "vColor = color;",
+    "gl_PointSize = 1.5;",
     "gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
     "}"
   ].join( "\n" ),
@@ -55,21 +58,48 @@ var ParamsShaderMaterial = {
   transparent: true
 }
 
-init();
-animate();
+let capturer = new CCapture( {
+  verbose: true,
+  display: true,
+  framerate: 60,
+  motionBlurFrames: 0,
+  format: 'gif',
+  workersPath: 'assets/lib/',
+  timeLimit: 1.57
+} );
 
-function init(){
+function CCaptureButtons() {
+
+  window.addEventListener( 'load', function ( e ) {
+    e.preventDefault();
+    capturer.start();
+  }, false );
+
+};
+
+
+init(particles);
+animate();
+// CCaptureButtons();
+
+function init(particles){
   geometry = new THREE.BufferGeometry();
   let positions = [];
   let colors = [];
-  for(let i = 0; i < triangles; i++){
-    positions.push(Math.random() * 200.0 - 100.0);
-    positions.push(Math.random() * 200.0 - 100.0);
-    positions.push(Math.random() * 200.0 - 100.0);
-    colors.push(Math.random() * 255.0);
-    colors.push(Math.random() * 255.0);
-    colors.push(Math.random() * 255.0);
-    colors.push(Math.random() * 255.0);
+  let x, y, z;
+  for(let i = 0; i < particles; i++){
+    x = Math.random() * 2.0 - 1.0;
+    y = Math.random() * 2.0 - 1.0;
+    z = Math.random() * 2.0 - 1.0;
+    if(x * x + y * y + z * z <= 1) {
+      positions.push(x * 500.0);
+      positions.push(y * 10.0);
+      positions.push(z * 500.0);
+      colors.push(Math.random() * 255.0);
+      colors.push(Math.random() * 255.0);
+      colors.push(Math.random() * 255.0);
+      colors.push(Math.random() * 255.0);
+    }
   }
   let positionAttribute = new THREE.Float32BufferAttribute(positions, 3);
   let colorAttribute = new THREE.Uint8BufferAttribute(colors, 4);
@@ -77,12 +107,8 @@ function init(){
   geometry.addAttribute( 'position', positionAttribute );
   geometry.addAttribute( 'color', colorAttribute );
   material = new THREE.ShaderMaterial(ParamsShaderMaterial);
-  mesh = new THREE.Mesh(geometry, material);
+  mesh = new THREE.Points(geometry, material);
   scene.add(mesh);
-}
-
-function createBox(){
-
 }
 
 function animate(){
@@ -93,7 +119,8 @@ function animate(){
 function render(){
   time = performance.now();
   material.uniforms.time.value = time;
-  // mesh.rotation.x += Math.PI / 180;
-  // mesh.rotation.y += Math.PI / 180;
+  mesh.rotation.x = (Math.cos(Math.PI * time * 0.1 / 360) * 0.25) - 0.1;
+  mesh.rotation.y += Math.PI / 720;
   renderer.render(scene, camera);
+  capturer.capture(renderer.domElement);
 }
