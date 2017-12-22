@@ -5,7 +5,6 @@ var HEIGHT = window.innerHeight;
 var particles = 300000;
 
 scene = new THREE.Scene();
-// camera = new THREE.OrthographicCamera( WIDTH / -2.0, WIDTH / 2.0, HEIGHT / 2.0, HEIGHT / -2.0, 0.1, 1000 );
 camera = new THREE.PerspectiveCamera(75, WIDTH / HEIGHT, 0.1, 10000);
 camera.position.set(0, 20.0, 60.0);
 camera.lookAt(new THREE.Vector3());
@@ -25,10 +24,6 @@ function onWindowResize(){
   camera.updateProjectionMatrix();
   renderer.setSize(WIDTH, HEIGHT);
 }
-
-var pointSizeRange = renderer.context.getParameter( renderer.context.ALIASED_POINT_SIZE_RANGE );
-console.log( 'pointSizeRange: ' + pointSizeRange[ 0 ] + ' to ' + pointSizeRange[ 1 ] );
-
 
 var ParamsShaderMaterial = {
   uniforms: {
@@ -58,31 +53,10 @@ var ParamsShaderMaterial = {
   transparent: true
 }
 
-let capturer = new CCapture( {
-  verbose: true,
-  display: true,
-  framerate: 60,
-  motionBlurFrames: 0,
-  format: 'gif',
-  workersPath: 'assets/lib/',
-  timeLimit: 1.57
-} );
-
-function CCaptureButtons() {
-
-  window.addEventListener( 'load', function ( e ) {
-    e.preventDefault();
-    capturer.start();
-  }, false );
-
-};
-
-
-init(particles);
+init();
 animate();
-// CCaptureButtons();
 
-function init(particles){
+function init(){
   geometry = new THREE.BufferGeometry();
   let positions = [];
   let colors = [];
@@ -122,5 +96,4 @@ function render(){
   mesh.rotation.x = (Math.cos(Math.PI * time * 0.1 / 360) * 0.05) + 0.1;
   mesh.rotation.y += Math.PI / 720;
   renderer.render(scene, camera);
-  capturer.capture(renderer.domElement);
 }
